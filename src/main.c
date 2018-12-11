@@ -9,6 +9,7 @@
 #include "ga.h"
 #include "utils.h"
 #include "gnuplot.h"
+#include "../config.h"
 
 const char *program_name;
 
@@ -89,7 +90,14 @@ int main(int argc, char *argv[]){
         case 'o': fitness_output = optarg; break;
         case '?': print_usage(stderr, EXIT_FAILURE);
         case 's': stop=1; break;
-        case 'p': gnuplot_fname = optarg; break;
+        case 'p': {
+#ifndef HAVE_GNUPLOT
+            fprintf(stderr, "You asked to plot on %s, however 'gnuplot' is not installed! Won't plot!\n",optarg);
+#else
+            gnuplot_fname = optarg;
+#endif
+            break;
+          }
         case -1: break;
         default: abort();
         }
