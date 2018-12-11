@@ -24,7 +24,7 @@ void print_pop(individual *pop, int amount, FILE* fout){
   if(real_amount == -1){ // If the amount parameter is -1, print at max POP_SIZE
       real_amount = POP_SIZE;
     }
-  for(i=0;i<amount;i++){
+  for(i=0;i<real_amount;i++){
       fprintf(fout,"Individual %02d:",i);
       for(j=0;j<FINAL_LENGTH;j++){
           fprintf(fout,"%c",pop[i].s[j]);
