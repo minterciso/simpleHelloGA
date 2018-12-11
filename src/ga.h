@@ -18,12 +18,14 @@ typedef struct {
 /**
  * @brief fitness Calculates the fitness (hamilton distance from target text) of the individual, and store the fitness on the fit address variable
  * @param s The string we want to check
+ * @param d The destination string
  * @param fit A pointer to where we want the fitneess to be stored at
  */
 void fitness(const char *s, const char *d, int *fit);
 
 /**
  * @brief create_popultion Create the population, based on the parameter defined on consts.h
+ * @param dest_len The length of the destination string
  * @return A pointer to an initilized population (which is nothing more than an individual array)
  */
 individual* create_population(size_t dest_len);
@@ -42,6 +44,10 @@ void calc_fitness(individual *pop, const char *d);
  */
 void xover_and_mutate(individual *pop, size_t dest_len);
 
+/**
+ * @brief destroy_population Free the population memory
+ * @param pop The population to destroy
+ */
 void destroy_population(individual *pop);
 
 #endif /* GA_H_ */
