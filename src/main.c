@@ -3,10 +3,13 @@
 #include <string.h>
 #include <time.h>
 #include <errno.h>
+#include <getopt.h>
 
 #include "consts.h"
 #include "ga.h"
 #include "utils.h"
+
+const char *program_name;
 
 /**
  * @brief print_pop Helper function to print the population on the fout parameter
@@ -43,10 +46,47 @@ static int cmppop(const void *p1, const void *p2){
   return i1->fitness-i2->fitness;
 }
 
+/**
+ * @brief print_usage Prints a simple usage information
+ * @param stream Where to output the usage information
+ * @param exit_code The code to exit the program with
+ */
+void print_usage(FILE *stream, int exit_code){
+  fprintf(stream, "Usage: %s options\n", program_name);
+  fprintf(stream, "    -h\t--help\t\tDisplay this help message.\n");
+  fprintf(stream, "    -o\t--output filename\tOutput of fitness trough time.\n");
+  exit(exit_code);
+}
+
 int main(int argc, char *argv[]){
   individual *pop; // An array with the complete population
   int g;
-  int time_start = cpuSecond();
+  double time_start = 0;
+  // getopt variables
+  int next_option;
+  const char* const short_options ="ho:";
+  const struct option long_options[] = {
+  {"help", 0, NULL, 'h' },
+  {"output",1, NULL, 'o'},
+  {NULL,0,NULL,0}
+  };
+  const char *fitness_output = NULL;
+
+  program_name = argv[0];
+  // Parse options
+  do{
+      next_option = getopt_long(argc, argv, short_options, long_options, NULL);
+      switch(next_option){
+        case 'h': print_usage(stdout,EXIT_SUCCESS);
+        case 'o': fitness_output = optarg; break;
+        case '?': print_usage(stderr, EXIT_FAILURE);
+        case -1: break;
+        default: abort();
+        }
+    }while(next_option != -1);
+
+  // Now we really start
+  time_start = cpuSecond();
   fprintf(stdout, "[*] Starting %s...\n",argv[0]);
   fflush(stdout);
   fprintf(stdout,"[*] Creating population...");
