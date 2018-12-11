@@ -76,7 +76,6 @@ void xover_and_mutate(individual *pop){
       individual *p2 = &pop[id2];
       individual *s1 = &pop[i];
       individual *s2 = &pop[i+1];
-      // There may be a bug here with the memcpy(), we may be copying more than needed, check this!
       memcpy(s1->s, p1->s, xp);
       memcpy(s1->s + xp, p2->s + xp, (FINAL_LENGTH-xp));
       memcpy(s2->s, p2->s, xp);
