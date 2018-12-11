@@ -70,11 +70,11 @@ int main(int argc, char *argv[]){
   int next_option;
   const char* const short_options ="ho:sp:";
   const struct option long_options[] = {
-  {"help", 0, NULL, 'h' },
-  {"output",1, NULL, 'o'},
-  {"stop",0, NULL, 's'},
-  {"plot",0,NULL,'p'},
-  {NULL,0,NULL,0}
+    {"help", 0, NULL, 'h' },
+    {"output",1, NULL, 'o'},
+    {"stop",0, NULL, 's'},
+    {"plot",0,NULL,'p'},
+    {NULL,0,NULL,0}
   };
   const char *fitness_output = NULL;
   const char *gnuplot_fname = NULL;

@@ -10,8 +10,8 @@
 
 #define MIN_CHAR 0
 #define MAX_CHAR 255
-#define FINAL_STRING "Hello World!\0"   /// Target string
-#define FINAL_LENGTH 13                 /// Target string length
+#define FINAL_STRING "Hello World from a motherf****ing perspective!\0"   /// Target string
+#define FINAL_LENGTH 47                 /// Target string length
 #define POP_SIZE 500                    /// Size of population
 #define KEEP_POP POP_SIZE*0.2           /// Best keep of the population
 #define GA_RUNS 1000                    /// How many runs
