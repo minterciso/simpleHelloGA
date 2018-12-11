@@ -21,14 +21,12 @@ void print_pop(individual *pop, int amount, FILE* fout){
       fprintf(stderr,"Unable to print population, as population is NULL!");
       return;
     }
-  if(real_amount == -1){ // If the amount parameter is -1, print at max POP_SIZE
+  if(real_amount == -1) // If the amount parameter is -1, print at max POP_SIZE
       real_amount = POP_SIZE;
-    }
   for(i=0;i<real_amount;i++){
       fprintf(fout,"Individual %02d:",i);
-      for(j=0;j<FINAL_LENGTH;j++){
+      for(j=0;j<FINAL_LENGTH;j++)
           fprintf(fout,"%c",pop[i].s[j]);
-        }
       fprintf(fout, " [%d]\n",pop[i].fitness);
     }
 }
@@ -63,9 +61,8 @@ int main(int argc, char *argv[]){
       calc_fitness(pop);
       qsort(pop,POP_SIZE,sizeof(individual),cmppop);
       best = &pop[0];
-      if(best->fitness==0){
+      if(best->fitness==0)
           break;
-        }
       if(g!=GA_RUNS)
           xover_and_mutate(pop);
     }

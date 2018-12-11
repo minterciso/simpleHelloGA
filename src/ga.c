@@ -15,9 +15,8 @@ void fitness(const char *s, int *fit){
   int i;
   const char *d = FINAL_STRING;
   *fit = 0;
-  for(i=0;i<FINAL_LENGTH;i++){
+  for(i=0;i<FINAL_LENGTH;i++)
       *fit += abs(s[i]-d[i]);
-    }
 }
 
 individual* create_popultion(void){
@@ -41,9 +40,8 @@ individual* create_popultion(void){
   for(i=0;i<POP_SIZE;i++){
       pop[i].fitness=99999;
       memset(tmp_string,'\0',FINAL_LENGTH);
-      for(j=0;j<FINAL_LENGTH-1;j++){
+      for(j=0;j<FINAL_LENGTH-1;j++)
           tmp_string[j] = (char)(rand()%(max-min+1)+min);
-        }
       snprintf(pop[i].s, FINAL_LENGTH, "%s",tmp_string);
     }
   free(tmp_string);
@@ -52,9 +50,8 @@ individual* create_popultion(void){
 
 void calc_fitness(individual *pop){
   int i;
-  for(i=0;i<POP_SIZE;i++){
+  for(i=0;i<POP_SIZE;i++)
       fitness(pop[i].s, &pop[i].fitness);
-    }
 }
 
 void xover_and_mutate(individual *pop){
@@ -71,9 +68,8 @@ void xover_and_mutate(individual *pop){
       //select 2 random ids
       int id1=rand()%KEEP_POP;
       int id2=id1;
-      while(id2==id1){
+      while(id2==id1)
           id2 = rand()%KEEP_POP;
-        }
       //select single point xover
       int xp = rand()%FINAL_LENGTH;
       individual *p1 = &pop[id1];
@@ -89,14 +85,12 @@ void xover_and_mutate(individual *pop){
       for(j=0;j<FINAL_LENGTH;j++){
           //s1
           float rnd = (float)rand()/(float)(RAND_MAX);
-          if(rnd < PROB_M){
+          if(rnd < PROB_M)
               s1->s[j] = (char)(rand()%(max-min+1)+min);
-            }
           //s2
           rnd = (float)rand()/(float)(RAND_MAX);
-          if(rnd < PROB_M){
+          if(rnd < PROB_M)
               s2->s[j] = (char)(rand()%(max-min+1)+min);
-            }
         }
     }
 }
