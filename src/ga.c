@@ -11,15 +11,15 @@
 #include <time.h>
 #include "ga.h"
 
-void fitness(const char *s, int *fit){
+void fitness(const char *s, const char *d, int *fit){
   int i;
-  const char *d = FINAL_STRING;
   *fit = 0;
-  for(i=0;i<FINAL_LENGTH;i++)
+  size_t dest_len = strlen(d);
+  for(i=0;i<dest_len;i++)
       *fit += abs(s[i]-d[i]);
 }
 
-individual* create_popultion(void){
+individual* create_population(size_t dest_len){
   int i,j;
   int min=MIN_CHAR;
   int max=MAX_CHAR;
@@ -32,29 +32,37 @@ individual* create_popultion(void){
       return NULL;
     }
   memset(pop,'\0',sizeof(individual)*POP_SIZE);
-  if((tmp_string=(char*)malloc(sizeof(char)*FINAL_LENGTH))==NULL){
+  // For eacah individual allocate the string memory
+  for(i=0;i<POP_SIZE;i++){
+      if((pop[i].s=(char*)malloc(dest_len))==NULL){
+          perror("Unable to allocate memory for string");
+          return NULL;
+        }
+      memset(pop[i].s, '\0', dest_len);
+    }
+  if((tmp_string=(char*)malloc(sizeof(char)*dest_len))==NULL){
       perror("Unable to allocate temporary string");
       free(pop);
       return NULL;
     }
   for(i=0;i<POP_SIZE;i++){
-      pop[i].fitness=99999;
-      memset(tmp_string,'\0',FINAL_LENGTH);
-      for(j=0;j<FINAL_LENGTH-1;j++)
+      pop[i].fitness = 99999;
+      memset(tmp_string,'\0',dest_len);
+      for(j=0;j<dest_len-1;j++)
           tmp_string[j] = (char)(rand()%(max-min+1)+min);
-      snprintf(pop[i].s, FINAL_LENGTH, "%s",tmp_string);
+      snprintf(pop[i].s, dest_len, "%s",tmp_string);
     }
   free(tmp_string);
   return pop;
 }
 
-void calc_fitness(individual *pop){
+void calc_fitness(individual *pop, const char *d){
   int i;
   for(i=0;i<POP_SIZE;i++)
-      fitness(pop[i].s, &pop[i].fitness);
+      fitness(pop[i].s, d, &pop[i].fitness);
 }
 
-void xover_and_mutate(individual *pop){
+void xover_and_mutate(individual *pop, size_t dest_len){
   int i,j;
   int min=MIN_CHAR;
   int max=MAX_CHAR;
@@ -62,7 +70,7 @@ void xover_and_mutate(individual *pop){
   // Kill low performance individuals
   for(i=KEEP_POP;i<POP_SIZE;i++){
       pop[i].fitness=9999;
-      memset(pop[i].s,'\0',FINAL_LENGTH);
+      memset(pop[i].s,'\0',dest_len);
     }
   for(i=KEEP_POP;i<POP_SIZE;i+=2){
       //select 2 random ids
@@ -71,17 +79,17 @@ void xover_and_mutate(individual *pop){
       while(id2==id1)
           id2 = rand()%KEEP_POP;
       //select single point xover
-      int xp = rand()%FINAL_LENGTH;
+      int xp = rand()%dest_len;
       individual *p1 = &pop[id1];
       individual *p2 = &pop[id2];
       individual *s1 = &pop[i];
       individual *s2 = &pop[i+1];
       memcpy(s1->s, p1->s, xp);
-      memcpy(s1->s + xp, p2->s + xp, (FINAL_LENGTH-xp));
+      memcpy(s1->s + xp, p2->s + xp, (dest_len-xp));
       memcpy(s2->s, p2->s, xp);
-      memcpy(s2->s + xp, p1->s +xp, (FINAL_LENGTH-xp));
+      memcpy(s2->s + xp, p1->s +xp, (dest_len-xp));
       // mutate
-      for(j=0;j<FINAL_LENGTH;j++){
+      for(j=0;j<dest_len;j++){
           //s1
           float rnd = (float)rand()/(float)(RAND_MAX);
           if(rnd < PROB_M)
@@ -92,4 +100,11 @@ void xover_and_mutate(individual *pop){
               s2->s[j] = (char)(rand()%(max-min+1)+min);
         }
     }
+}
+
+void destroy_population(individual *pop){
+  int i;
+  for(i=0;i<POP_SIZE;i++)
+      free(pop[i].s);
+  free(pop);
 }

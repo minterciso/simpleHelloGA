@@ -18,8 +18,9 @@ const char *program_name;
  * @param pop A pointer to an already initialized population
  * @param amount The amount of individuals we need to print
  * @param fout The file output to print the population, unless there's an error
+ * @param dest_len The size of the string inside each individual
  */
-void print_pop(individual *pop, int amount, FILE* fout){
+void print_pop(individual *pop, int amount, FILE* fout, size_t dest_len){
   int i,j;
   int real_amount = amount;
   if(pop == NULL){
@@ -30,7 +31,7 @@ void print_pop(individual *pop, int amount, FILE* fout){
       real_amount = POP_SIZE;
   for(i=0;i<real_amount;i++){
       fprintf(fout,"Individual %02d:",i);
-      for(j=0;j<FINAL_LENGTH;j++)
+      for(j=0;j<dest_len;j++)
           fprintf(fout,"%c",pop[i].s[j]);
       fprintf(fout, " [%d]\n",pop[i].fitness);
     }
@@ -64,6 +65,8 @@ void print_usage(FILE *stream, int exit_code){
 
 int main(int argc, char *argv[]){
   individual *pop; // An array with the complete population
+  const char *dest = "Hello World from a motherf****ing perspective!\0";
+  size_t dest_len = strlen(dest);
   int g, stop_g=-1;
   double time_start = 0;
   // getopt variables
@@ -120,14 +123,14 @@ int main(int argc, char *argv[]){
   fflush(stdout);
   fprintf(stdout,"[*] Creating population...");
   fflush(stdout);
-  if((pop = create_popultion())==NULL)
+  if((pop = create_population(dest_len))==NULL)
     return errno;
   fprintf(stdout,"[OK]\n");
   fprintf(stdout,"[*] Evolving...");
   fflush(stdout);
   individual * best = NULL;
   for(g=0;g<GA_RUNS;g++){
-      calc_fitness(pop);
+      calc_fitness(pop, dest);
       qsort(pop,POP_SIZE,sizeof(individual),cmppop);
       best = &pop[0];
       fprintf(data_fp,"%d,%d\n",g,best->fitness);
@@ -138,14 +141,15 @@ int main(int argc, char *argv[]){
             break;
         }
       if(g!=GA_RUNS)
-          xover_and_mutate(pop);
+          xover_and_mutate(pop, dest_len);
     }
   fprintf(stdout,"[OK]\n");
   fprintf(stdout,"[*] Best found: '%s' [%d]\n",best->s, best->fitness);
   if(best->fitness == 0)
       fprintf(stdout,"[*] Found correct sentence in %d generations!\n",stop_g);
   fflush(stdout);
-  free(pop);
+  //free(pop);
+  destroy_population(pop);
   fclose(data_fp);
   fprintf(stdout,"[*] Done, took %f seconds!\n", cpuSecond() - time_start);
   if(gnuplot_fname!=NULL){
