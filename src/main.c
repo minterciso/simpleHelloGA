@@ -8,6 +8,7 @@
 #include "consts.h"
 #include "ga.h"
 #include "utils.h"
+#include "gnuplot.h"
 
 const char *program_name;
 
@@ -53,24 +54,31 @@ static int cmppop(const void *p1, const void *p2){
  */
 void print_usage(FILE *stream, int exit_code){
   fprintf(stream, "Usage: %s options\n", program_name);
-  fprintf(stream, "    -h\t--help\t\tDisplay this help message.\n");
+  fprintf(stream, "    -h\t--help\t\t\tDisplay this help message.\n");
   fprintf(stream, "    -o\t--output filename\tOutput of fitness trough time.\n");
+  fprintf(stream, "    -s\t--stop\t\t\tStop when finding the string.\n");
+  fprintf(stream, "    -p\t--plot filename\t\tPlot a file using gnuplot pipes, and save on filename (only .png).\n");
   exit(exit_code);
 }
 
 int main(int argc, char *argv[]){
   individual *pop; // An array with the complete population
-  int g;
+  int g, stop_g=-1;
   double time_start = 0;
   // getopt variables
   int next_option;
-  const char* const short_options ="ho:";
+  const char* const short_options ="ho:sp:";
   const struct option long_options[] = {
   {"help", 0, NULL, 'h' },
   {"output",1, NULL, 'o'},
+  {"stop",0, NULL, 's'},
+  {"plot",0,NULL,'p'},
   {NULL,0,NULL,0}
   };
   const char *fitness_output = NULL;
+  const char *gnuplot_fname = NULL;
+  FILE *data_fp = NULL;
+  int stop = 0;
 
   program_name = argv[0];
   // Parse options
@@ -80,10 +88,23 @@ int main(int argc, char *argv[]){
         case 'h': print_usage(stdout,EXIT_SUCCESS);
         case 'o': fitness_output = optarg; break;
         case '?': print_usage(stderr, EXIT_FAILURE);
+        case 's': stop=1; break;
+        case 'p': gnuplot_fname = optarg; break;
         case -1: break;
         default: abort();
         }
     }while(next_option != -1);
+  if(fitness_output == NULL){
+      fprintf(stderr, "Output file is mandatory!\n");
+      print_usage(stderr, EXIT_FAILURE);
+    }
+
+  // Open up the CVS log file
+  if((data_fp=fopen(fitness_output, "w"))==NULL){
+      perror("Unable to open file!");
+      return EXIT_SUCCESS;
+    }
+  fprintf(data_fp, "generation,fitness");
 
   // Now we really start
   time_start = cpuSecond();
@@ -101,17 +122,27 @@ int main(int argc, char *argv[]){
       calc_fitness(pop);
       qsort(pop,POP_SIZE,sizeof(individual),cmppop);
       best = &pop[0];
-      if(best->fitness==0)
-          break;
+      fprintf(data_fp,"%d,%d\n",g,best->fitness);
+      if(best->fitness==0){
+          if(stop_g == -1)
+            stop_g = g;
+          if(stop==1)
+            break;
+        }
       if(g!=GA_RUNS)
           xover_and_mutate(pop);
     }
   fprintf(stdout,"[OK]\n");
   fprintf(stdout,"[*] Best found: '%s' [%d]\n",best->s, best->fitness);
   if(best->fitness == 0)
-      fprintf(stdout,"[*] Found correct sentence in %d generations!\n",g);
+      fprintf(stdout,"[*] Found correct sentence in %d generations!\n",stop_g);
   fflush(stdout);
   free(pop);
+  fclose(data_fp);
   fprintf(stdout,"[*] Done, took %f seconds!\n", cpuSecond() - time_start);
+  if(gnuplot_fname!=NULL){
+    fprintf(stdout, "[*] Plotting evolution to '%s'\n", gnuplot_fname);
+    plot(fitness_output, gnuplot_fname);
+    }
   return EXIT_SUCCESS;
 }
