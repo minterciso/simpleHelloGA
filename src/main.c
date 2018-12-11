@@ -57,6 +57,7 @@ static int cmppop(const void *p1, const void *p2){
 void print_usage(FILE *stream, int exit_code){
   fprintf(stream, "Usage: %s options\n", program_name);
   fprintf(stream, "    -h\t--help\t\t\tDisplay this help message.\n");
+  fprintf(stream, "    -d\t--destination \"string\"\tString to try to evolve into.\n");
   fprintf(stream, "    -o\t--output filename\tOutput of fitness trough time.\n");
   fprintf(stream, "    -s\t--stop\t\t\tStop when finding the string.\n");
   fprintf(stream, "    -p\t--plot filename\t\tPlot a file using gnuplot pipes, and save on filename (only .png).\n");
@@ -65,15 +66,16 @@ void print_usage(FILE *stream, int exit_code){
 
 int main(int argc, char *argv[]){
   individual *pop; // An array with the complete population
-  const char *dest = "Hello World from a motherf****ing perspective!\0";
-  size_t dest_len = strlen(dest);
+  const char *dest = NULL;
+  size_t dest_len = 0;
   int g, stop_g=-1;
   double time_start = 0;
   // getopt variables
   int next_option;
-  const char* const short_options ="ho:sp:";
+  const char* const short_options ="hd:o:sp:";
   const struct option long_options[] = {
     {"help", 0, NULL, 'h' },
+    {"destination",0,NULL,'d'},
     {"output",1, NULL, 'o'},
     {"stop",0, NULL, 's'},
     {"plot",0,NULL,'p'},
@@ -90,6 +92,7 @@ int main(int argc, char *argv[]){
       next_option = getopt_long(argc, argv, short_options, long_options, NULL);
       switch(next_option){
         case 'h': print_usage(stdout,EXIT_SUCCESS);
+        case 'd': dest=optarg; break;
         case 'o': fitness_output = optarg; break;
         case '?': print_usage(stderr, EXIT_FAILURE);
         case 's': stop=1; break;
@@ -109,6 +112,9 @@ int main(int argc, char *argv[]){
       fprintf(stderr, "Output file is mandatory!\n");
       print_usage(stderr, EXIT_FAILURE);
     }
+  if(dest==NULL)
+    dest="Hello World from a motherf****ing perspective!\0"; //Default
+  dest_len = strlen(dest);
 
   // Open up the CVS log file
   if((data_fp=fopen(fitness_output, "w"))==NULL){
