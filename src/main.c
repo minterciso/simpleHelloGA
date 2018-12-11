@@ -50,17 +50,11 @@ int main(int argc, char *argv[]){
   int g;
   int time_start = cpuSecond();
   fprintf(stdout, "[*] Starting %s...\n",argv[0]);
-  fprintf(stdout,"[*] Allocating memory for the population...");
   fflush(stdout);
-  if((pop=(individual*)malloc(sizeof(individual)*POP_SIZE))==NULL){
-      perror("Unable to allocate!");
-      return errno;
-    }
-  memset(pop,'\0',sizeof(individual)*POP_SIZE);
-  fprintf(stdout,"[OK]\n");
   fprintf(stdout,"[*] Creating population...");
   fflush(stdout);
-  create_popultion(pop);
+  if((pop = create_popultion())==NULL)
+    return errno;
   fprintf(stdout,"[OK]\n");
   fprintf(stdout,"[*] Evolving...");
   fflush(stdout);

@@ -10,11 +10,11 @@
 
 #define MIN_CHAR 0
 #define MAX_CHAR 255
-#define FINAL_STRING "Hello World!\0"
-#define FINAL_LENGTH 13
-#define POP_SIZE 500
-#define KEEP_POP 20
-#define GA_RUNS 1000
-#define PROB_M 0.02
+#define FINAL_STRING "Hello World!\0"   /// Target string
+#define FINAL_LENGTH 13                 /// Target string length
+#define POP_SIZE 500                    /// Size of population
+#define KEEP_POP POP_SIZE*0.2           /// Best keep of the population
+#define GA_RUNS 1000                    /// How many runs
+#define PROB_M 0.02                     /// Probability of mutation
 
 #endif /* CONSTS_H_ */

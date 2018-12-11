@@ -20,16 +20,23 @@ void fitness(const char *s, int *fit){
     }
 }
 
-void create_popultion(individual *pop){
+individual* create_popultion(void){
   int i,j;
   int min=MIN_CHAR;
   int max=MAX_CHAR;
   char *tmp_string;
+  individual *pop = NULL;
 
   srand(time(NULL));
+  if((pop=(individual*)malloc(sizeof(individual)*POP_SIZE))==NULL){
+      perror("Unable to allocate memory for population");
+      return NULL;
+    }
+  memset(pop,'\0',sizeof(individual)*POP_SIZE);
   if((tmp_string=(char*)malloc(sizeof(char)*FINAL_LENGTH))==NULL){
-      perror("Unable to allocate!");
-      return;
+      perror("Unable to allocate temporary string");
+      free(pop);
+      return NULL;
     }
   for(i=0;i<POP_SIZE;i++){
       pop[i].fitness=99999;
@@ -40,6 +47,7 @@ void create_popultion(individual *pop){
       snprintf(pop[i].s, FINAL_LENGTH, "%s",tmp_string);
     }
   free(tmp_string);
+  return pop;
 }
 
 void calc_fitness(individual *pop){
