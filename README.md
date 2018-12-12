@@ -1,4 +1,4 @@
-#Intro
+# Intro
 
 This is a very simple Genetic Algorithm. I use this mainly for testing pourposes, and for teaching thee bases of a GA.
 
