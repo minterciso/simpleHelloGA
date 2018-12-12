@@ -1,4 +1,5 @@
 #Intro
+
 This is a very simple Genetic Algorithm. I use this mainly for testing pourposes, and for teaching thee bases of a GA.
 
 What it does, is evolve a random population to find a destination string, if passed. If no string is passed it'll use the default one. It's also possible to plot a graph in a PNG format if you have gnuplot installed.
