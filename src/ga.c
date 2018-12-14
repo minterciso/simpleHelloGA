@@ -49,7 +49,7 @@ individual* create_population(size_t dest_len){
       pop[i].fitness = 99999;
       memset(tmp_string,'\0',dest_len);
       for(j=0;j<dest_len-1;j++)
-          tmp_string[j] = (char)(rand()%(max-min+1)+min);
+          tmp_string[j] = (char)((rand()%(max-min+1))+min);
       snprintf(pop[i].s, dest_len, "%s",tmp_string);
     }
   free(tmp_string);
