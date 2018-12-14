@@ -8,8 +8,8 @@
 #ifndef CONSTS_H_
 #define CONSTS_H_
 
-#define MIN_CHAR 0
-#define MAX_CHAR 255
+#define MIN_CHAR 32
+#define MAX_CHAR 127
 #define POP_SIZE 500                    /// Size of population
 #define KEEP_POP POP_SIZE*0.2           /// Best keep of the population
 #define GA_RUNS 1000                    /// How many runs

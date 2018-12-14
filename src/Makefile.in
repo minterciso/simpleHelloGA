@@ -99,7 +99,7 @@ CONFIG_CLEAN_FILES =
 CONFIG_CLEAN_VPATH_FILES =
 am__installdirs = "$(DESTDIR)$(bindir)"
 PROGRAMS = $(bin_PROGRAMS)
-am_simpleHelloGA_OBJECTS = main.$(OBJEXT) ga.$(OBJEXT)
+am_simpleHelloGA_OBJECTS = main.$(OBJEXT) ga.$(OBJEXT) utils.$(OBJEXT)
 simpleHelloGA_OBJECTS = $(am_simpleHelloGA_OBJECTS)
 simpleHelloGA_DEPENDENCIES =
 simpleHelloGA_LINK = $(CCLD) $(AM_CFLAGS) $(CFLAGS) \
@@ -119,7 +119,8 @@ am__v_at_1 =
 DEFAULT_INCLUDES = -I.@am__isrc@ -I$(top_builddir)
 depcomp = $(SHELL) $(top_srcdir)/depcomp
 am__maybe_remake_depfiles = depfiles
-am__depfiles_remade = ./$(DEPDIR)/ga.Po ./$(DEPDIR)/main.Po
+am__depfiles_remade = ./$(DEPDIR)/ga.Po ./$(DEPDIR)/main.Po \
+	./$(DEPDIR)/utils.Po
 am__mv = mv -f
 COMPILE = $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) \
 	$(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
@@ -181,6 +182,7 @@ ECHO_N = @ECHO_N@
 ECHO_T = @ECHO_T@
 EGREP = @EGREP@
 EXEEXT = @EXEEXT@
+GNUPLOT = @GNUPLOT@
 GREP = @GREP@
 INSTALL = @INSTALL@
 INSTALL_DATA = @INSTALL_DATA@
@@ -251,13 +253,14 @@ top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
 AM_CPPFLAGS = -DDEBUG
 AM_CFLAGS = -O0 \
-			-ggdb \
-			-g3 \
-			-Wall
+            -ggdb \
+            -g3 \
+            -Wall
 
 simpleHelloGA_SOURCES = main.c \
-						ga.h ga.c \
-						consts.h
+                        ga.h ga.c \
+                        utils.h utils.c \
+                        consts.h
 
 simpleHelloGA_LDFLAGS = 
 simpleHelloGA_LDADD = 
@@ -349,6 +352,7 @@ distclean-compile:
 
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ga.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/main.Po@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/utils.Po@am__quote@ # am--include-marker
 
 $(am__depfiles_remade):
 	@$(MKDIR_P) $(@D)
@@ -499,6 +503,7 @@ clean-am: clean-binPROGRAMS clean-generic mostlyclean-am
 distclean: distclean-am
 		-rm -f ./$(DEPDIR)/ga.Po
 	-rm -f ./$(DEPDIR)/main.Po
+	-rm -f ./$(DEPDIR)/utils.Po
 	-rm -f Makefile
 distclean-am: clean-am distclean-compile distclean-generic \
 	distclean-tags
@@ -546,6 +551,7 @@ installcheck-am:
 maintainer-clean: maintainer-clean-am
 		-rm -f ./$(DEPDIR)/ga.Po
 	-rm -f ./$(DEPDIR)/main.Po
+	-rm -f ./$(DEPDIR)/utils.Po
 	-rm -f Makefile
 maintainer-clean-am: distclean-am maintainer-clean-generic
 
